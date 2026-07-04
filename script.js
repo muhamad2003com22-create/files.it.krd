@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiODRmZjhlN2FkOWUzNWY4NWM0MjhkMGE4YTBiZGM5YzQ2NjdlYTQ3YzJhYmQ1ZjVjZGE1NzZlZjdhMjQ3MWMzZWRjMWVkNmUzOTU4MmViMGUiLCJpYXQiOjE3ODMxODEyNTEuNTA1NzEsIm5iZiI6MTc4MzE4MTI1MS41MDU3MTIsImV4cCI6NDkzODg1NDg1MS40OTk2NTcsInN1YiI6Ijc1Nzg0NDY4Iiwic2NvcGVzIjpbInRhc2sucmVhZCIsInVzZXIucmVhZCIsInVzZXIud3JpdGUiLCJ0YXNrLndyaXRlIiwicHJlc2V0LndyaXRlIiwid2ViaG9vay5yZWFkIiwid2ViaG9vay53cml0ZSIsInByZXNldC5yZWFkIl19.OR-jTQc5OUGk7kTopK1pfXgoXr2CHmXp7vlNJVAT61Z8j4yWkymUg-P9mwZ7D-URDQLKvN2QC0DjpORvqas77v1Tk4v4W8kTdS2D-V2Q8YLpvhqLQtnX5xF5bLOW8MIzgc5Gy0kO_zYJhD30rNS7ZxDo0LARMXfwsFlIew_C_ccGnVmJIR0sukRZ_cjK8qWelN1SwDcS1CBLP0L1bx-3-4qygJTK8A9eU5ugMUtlKxysR8skPMFxXSLA50Oc5YHGfM-4hge3MHiHMJ2cQdVuYFouKz0qxFVtS9VSP6TRn7_4MdI8fRShY1JKbAChadOsPB8IxgroOfs7BKXdUY_E10Zhl6dogulH-6hjcS0B0v7H0V0yVEtO01bxr_RYmVw6QDtu4ald83nq_hpxSXnFSqVQhzvHWuDYpsWMyy9gmkxQosZL_m7oOyDG42XbzPh5y2ZLke3YTWwTr59vUT7Gqbtn-sOtiaEo_ug_KPXjyoG0RwNeLWdC_g0OJWKYI0dzDDelQpWckmPvqoP101Nw-B86zW30CKHNx6xhEpaqxDSdhr2_L2IETmyHsKZt8Nf9ohVSdEv3NGKrhhq00BAfg7OsefAsQRrZ__yIhlIcc2nQUHyCgzDHmr_EpNlwaDWqvwudHdLG3HE_mbk_gacqnfJTa1Rqe3euBuTvdx-mX2I";
+    // ConvertAPI Secret (User provided)
+    const API_KEY = "LQwbFtqRcdXBqCUhx9EjHThLpjQkITnN";
 
     // Theme Logic
     const themeToggle = document.getElementById('theme-toggle');
@@ -179,8 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 progressText.textContent = `فایلی ${i + 1} لە ${currentFiles.length} (${file.name})`;
                 statusText.textContent = 'خەریکی دروستکردنی کارەکەیە...';
 
-                const resultUrl = await convertWithCloudConvert(file, targetFormat, quality, w, h);
                 const originalName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
+                const fromFormat = file.name.split('.').pop().toLowerCase();
+                const resultUrl = await convertWithConvertAPI(file, targetFormat, fromFormat);
                 const newName = `${originalName}.${targetFormat}`;
                 
                 completedFiles.push({ name: newName, url: resultUrl });
@@ -195,70 +197,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    async function convertWithCloudConvert(file, format, quality, w, h) {
-        const headers = {
-            'Authorization': `Bearer ${API_KEY}`,
-            'Content-Type': 'application/json'
-        };
+    async function convertWithConvertAPI(file, targetFormat, fromFormat) {
+        statusText.textContent = 'خەریکی ناردنی فایلەکەیە بۆ ConvertAPI...';
+        
+        const apiUrl = `https://v2.convertapi.com/convert/${fromFormat}/to/${targetFormat}?Secret=${API_KEY}`;
+        const formData = new FormData();
+        formData.append('File', file);
 
-        let convertOptions = {
-            "operation": "convert",
-            "input": "import-my-file",
-            "output_format": format
-        };
-
-        if (quality < 100) convertOptions.quality = quality;
-        if (w) convertOptions.width = parseInt(w);
-        if (h) convertOptions.height = parseInt(h);
-
-        const jobPayload = {
-            "tasks": {
-                "import-my-file": { "operation": "import/upload" },
-                "convert-my-file": convertOptions,
-                "export-my-file": { "operation": "export/url", "input": "convert-my-file" }
-            }
-        };
-
-        const jobRes = await fetch('https://api.cloudconvert.com/v2/jobs', {
+        const response = await fetch(apiUrl, {
             method: 'POST',
-            headers: headers,
-            body: JSON.stringify(jobPayload)
+            body: formData
         });
 
-        if (!jobRes.ok) {
-            const err = await jobRes.json();
-            throw new Error(err.message || 'کێشەیەک لە پێدانی دەسەڵات هەیە.');
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error('هەڵەیەک هەیە لە ConvertAPI، لەوانەیە باڵانسەکەت تەواو بووبێت یان فۆرماتەکە پشتگیری نەکرێت.');
         }
 
-        const jobData = await jobRes.json();
-        const uploadTask = jobData.data.tasks.find(t => t.name === 'import-my-file');
-
-        statusText.textContent = 'بەرزکردنەوەی فایل...';
-        const formData = new FormData();
-        const uploadForm = uploadTask.result.form;
-        for (const key in uploadForm.parameters) {
-            formData.append(key, uploadForm.parameters[key]);
-        }
-        formData.append('file', file);
-
-        const uploadRes = await fetch(uploadForm.url, { method: 'POST', body: formData });
-        if (!uploadRes.ok) throw new Error('هەڵە لە بەرزکردنەوەی فایلەکەدا ڕوویدا.');
-
-        statusText.textContent = 'خەریکی گۆڕینی فۆرماتەکەیە...';
-        const jobId = jobData.data.id;
+        const data = await response.json();
         
-        while (true) {
-            await new Promise(r => setTimeout(r, 1500));
-            const statusRes = await fetch(`https://api.cloudconvert.com/v2/jobs/${jobId}`, { headers: headers });
-            const statusData = await statusRes.json();
-            const jobStatus = statusData.data.status;
-
-            if (jobStatus === 'finished') {
-                const exportTask = statusData.data.tasks.find(t => t.name === 'export-my-file');
-                return exportTask.result.files[0].url;
-            } else if (jobStatus === 'error') {
-                throw new Error('فۆرماتەکە پشتگیری ناکرێت یان کێشەیەک لە کوالێتی و قەبارەکەدا هەیە.');
-            }
+        if (data.Files && data.Files.length > 0) {
+            return data.Files[0].Url;
+        } else {
+            throw new Error('هیچ فایلێک نەگەڕایەوە.');
         }
     }
 
