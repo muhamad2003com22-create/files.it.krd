@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>گۆڕەری وێنەی پێشکەوتوو</title>
+    <meta name="description" content="باشترین وێبسایت بۆ گۆڕینی فۆرماتەکانی وێنە، ڤیدیۆ و دەنگ بە کوالێتی بەرز">
+    <link rel="icon" href="icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;800&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" title="گۆڕینی ڕەنگ">
+        <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        <svg class="moon-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+    </button>
+
+    <div class="background-elements">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>گۆڕەری فایلە <span>پێشکەوتووەکە</span></h1>
+            <p>هەموو جۆرە وێنە، ڤیدیۆ و دەنگێک بگۆڕە بۆ هەر فۆرماتێک کە دەتەوێت بەیەکەوە.</p>
+        </header>
+
+        <main class="glass-panel">
+            <div class="upload-area" id="drop-zone">
+                <div class="upload-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <h3>فایلەکانت لێرە دابنێ</h3>
+                <p>یان کرتە بکە بۆ هەڵبژاردنی چەندین فایل بەیەکەوە</p>
+                <!-- Added multiple attribute for batch processing -->
+                <input type="file" id="file-input" hidden multiple accept="image/*,video/*,audio/*,.pdf,.eps,.ps,.psd,.tiff,.avif,.odg,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,.rtf">
+            </div>
+
+            <div id="file-list-container" class="file-list-container hidden">
+                <div class="list-header">
+                    <h4>فایلە هەڵبژێردراوەکان (<span id="file-count">0</span>)</h4>
+                    <button id="clear-all-files" class="text-btn">سڕینەوەی هەمووی</button>
+                </div>
+                <div id="file-list" class="file-list">
+                    <!-- Files will be injected here via JS -->
+                </div>
+            </div>
+
+            <div class="conversion-settings hidden" id="conversion-settings">
+                <div class="settings-grid">
+                    <div class="input-group">
+                        <label for="output-format">گۆڕین بۆ:</label>
+                        <select id="output-format">
+                            <optgroup label="بەڵگەنامە (Documents)">
+                                <option value="pdf">PDF</option>
+                                <option value="docx">Word (DOCX)</option>
+                                <option value="doc">Word (DOC)</option>
+                                <option value="xlsx">Excel (XLSX)</option>
+                                <option value="xls">Excel (XLS)</option>
+                                <option value="pptx">PowerPoint (PPTX)</option>
+                                <option value="ppt">PowerPoint (PPT)</option>
+                                <option value="txt">تێکست (TXT)</option>
+                                <option value="csv">CSV</option>
+                            </optgroup>
+                            <optgroup label="وێنە">
+                                <option value="jpg">JPG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WEBP</option>
+                                <option value="avif">AVIF</option>
+                                <option value="bmp">BMP</option>
+                                <option value="gif">GIF</option>
+                                <option value="tiff">TIFF</option>
+                                <option value="ico">ICO</option>
+                                <option value="icns">ICNS</option>
+                                <option value="eps">EPS</option>
+                                <option value="ps">PS</option>
+                                <option value="psd">PSD</option>
+                                <option value="odg">ODG</option>
+                            </optgroup>
+                            <optgroup label="ڤیدیۆ">
+                                <option value="mp4">MP4</option>
+                                <option value="webm">WEBM</option>
+                                <option value="avi">AVI</option>
+                                <option value="mov">MOV</option>
+                                <option value="mkv">MKV</option>
+                            </optgroup>
+                            <optgroup label="دەنگ">
+                                <option value="mp3">MP3</option>
+                                <option value="wav">WAV</option>
+                                <option value="ogg">OGG</option>
+                                <option value="flac">FLAC</option>
+                                <option value="m4a">M4A</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="quality">کوالیتی (<span id="quality-val">100</span>%)</label>
+                        <input type="range" id="quality" min="10" max="100" value="100" class="slider">
+                        <p class="help-text">بۆ بچووککردنەوەی قەبارە کەمی بکەرەوە.</p>
+                    </div>
+                </div>
+
+                <div class="settings-grid">
+                    <div class="input-group">
+                        <label for="width">پانی (Width)</label>
+                        <input type="number" id="width" placeholder="نموونە: 1920" min="1">
+                    </div>
+                    <div class="input-group">
+                        <label for="height">بەرزی (Height)</label>
+                        <input type="number" id="height" placeholder="نموونە: 1080" min="1">
+                    </div>
+                </div>
+
+                <button id="convert-btn" class="primary-btn">
+                    <span>دەستپێکردنی گۆڕین</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </button>
+            </div>
+
+            <div id="status-container" class="status-container hidden">
+                <div class="loader-container">
+                    <div class="loader"></div>
+                    <h3 id="status-text">خەریکی دروستکردنی کارەکەیە...</h3>
+                    <p id="progress-text">فایلی 1 لە 1</p>
+                </div>
+            </div>
+
+            <div id="result-container" class="result-container hidden">
+                <div class="success-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <h3>بەسەرکەوتوویی تەواو بوو!</h3>
+                <div id="download-list" class="download-list">
+                    <!-- Download links will appear here -->
+                </div>
+                <button id="convert-another" class="secondary-btn">گۆڕینی فایلی تر</button>
+            </div>
+
+            <div id="error-container" class="error-container hidden">
+                <div class="error-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                </div>
+                <p id="error-text">هەڵەیەک ڕوویدا لە کاتی گۆڕینەکەدا.</p>
+                <button id="retry-btn" class="secondary-btn">گەڕانەوە</button>
+            </div>
+        </main>
+
+        <section class="history-section hidden" id="history-section">
+            <h2>مێژووی فایلەکان</h2>
+            <div class="history-list" id="history-list">
+                <!-- History items here -->
+            </div>
+            <button id="clear-history" class="text-btn danger-text mt-3">سڕینەوەی هەموو مێژووەکە</button>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
