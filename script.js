@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             el.className = 'download-item';
             el.innerHTML = `
                 <span class="file-name">${file.name}</span>
-                <a href="${file.url}" class="btn-small" download="${file.name}" target="_blank">داگرتن</a>
+                <a href="${file.url}" class="btn-small" target="_blank">داگرتن</a>
             `;
             downloadList.appendChild(el);
         });
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span class="file-name">${item.name}</span>
                     <span class="history-date">${item.date}</span>
                 </div>
-                <a href="${item.url}" class="text-btn" target="_blank" download="${item.name}">داگرتنەوە</a>
+                <a href="${item.url}" class="text-btn" target="_blank">داگرتنەوە</a>
             `;
             historyListEl.appendChild(el);
         });
